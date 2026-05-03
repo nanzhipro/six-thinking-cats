@@ -1,16 +1,20 @@
 # 六只思考猫（Six Thinking Cats）
 
-![六只思考猫标志](imgs/logo.png)
+<!-- markdownlint-disable MD033 -->
+<p align="center">
+  <img src="imgs/logo.png" alt="六只思考猫标志" width="320">
+</p>
+<!-- markdownlint-enable MD033 -->
 
-六只思考猫是一个面向个人决策场景的提示词与参考资料仓库（prompt-and-reference repository）。它把六顶思考帽与苏格拉底式探询结合起来，用六只彼此独立的“思考猫”帮助代理围绕同一个决策问题完成结构化分析，并最终输出一棵可执行的 Mermaid 决策树。
+六只思考猫是一个面向个人决策场景的提示词与参考资料仓库（prompt-and-reference repository）。它把六顶思考帽与苏格拉底式探询结合起来，帮助用户把“我到底该怎么选”的纠结，收敛成更清晰的判断、条件分叉与下一步行动，并最终输出一棵可执行的 Mermaid 决策树。
 
 这不是应用代码仓库，也不是通用框架包。这个仓库的核心交付物是 [SKILL.md](SKILL.md)；README 只负责说明这个技能（skill）是什么、适合什么场景、应该从哪里开始看。
 
 ## 概览（Overview）
 
 - **目标**：把模糊的“我该怎么选”收敛为可执行的判断与下一步行动。
-- **方法**：本仓库默认采用父代理先收集决策信息、再由六只猫按各自视角独立分析的工程化编排。
-- **交付**：结构化的六猫总结，加上一棵 Mermaid 决策树。
+- **方法**：先把决策问题说清，再分别从事实、机会、风险、直觉与替代方案几个角度拆开看。
+- **交付**：结构化的分析结论、待验证分歧、下一步行动，加上一棵 Mermaid 决策树。
 - **约束**：每只猫只在自己的视角里思考，只有最后的蓝猫收束阶段允许跨猫整合。
 - **理论边界**：这里描述的是本仓库的默认执行方式，不是把六顶思考帽原著解释成唯一固定顺序。
 
@@ -45,6 +49,23 @@ npx skills update six-thinking-cats
 - 投资决策：资产配置、标的选择、风险取舍。
 - 模糊纠结：用户没有明确选项，但明确表达了犹豫、卡住、拿不定主意。
 
+## 典型使用场景
+
+- “我要不要辞职去创业？”
+- “现在该不该换工作，还是再等半年？”
+- “这个合作能不能接，风险会不会太大？”
+- “我有两个方案都不完美，怎么比较才不失真？”
+- “我其实还没想清楚选项，但就是一直下不了决心。”
+
+如果你的问题更像上面这些真实决策，而不是单纯想了解理论，这个技能就适合直接上手。
+
+## 你会得到什么
+
+- 一份把纠结拆开的结构化判断，而不是一句空泛建议。
+- 一组真正影响决策的关键变量与待验证分歧。
+- 一个成本更低、信息价值更高的“下一步第一个行动”。
+- 一棵 Mermaid 决策树，帮助你看清不同条件下该怎么走。
+
 ## 工作方式（How It Works）
 
 这个技能当前采用“父代理编排 + 猫子代理（subagent）执行”的**默认模型**。它服务于仓库的执行稳定性，**不代表六顶思考帽理论只有这一种顺序**：
@@ -69,30 +90,8 @@ npx skills update six-thinking-cats
 - 🟢 绿猫方案：提出新路径、试验和组合方案。
 - 🔵 蓝猫收束：跨猫整合、阶段性结论、待验证分歧、下一步行动。
 
-## 仓库结构（Repository Layout）
+## 进一步阅读
 
-- [SKILL.md](SKILL.md)：主入口，定义触发条件、执行模型、流程规约、输出契约和视觉命名规约。
-- [references/framework.md](references/framework.md)：六顶思考帽整体框架、阶段标题、场景权重和问题链导航。
-- [references/socratic-questioning.md](references/socratic-questioning.md)：通用探询原则、提问节奏和共享资料包约束。
-- [references/blue-cat.md](references/blue-cat.md)：🔵 蓝猫启动 / 🔵 蓝猫收束的职责、输入输出和收束要求。
-- [references/white-cat.md](references/white-cat.md)：⚪ 白猫事实的事实分层与信息质量规则。
-- [references/yellow-cat.md](references/yellow-cat.md)：🟡 黄猫机会的上行空间与价值判断规则。
-- [references/black-cat.md](references/black-cat.md)：⚫ 黑猫风险的风险分层、最坏情景与安全垫规则。
-- [references/red-cat.md](references/red-cat.md)：🔴 红猫直觉的情绪、历史投射与隐藏顾虑规则。
-- [references/green-cat.md](references/green-cat.md)：🟢 绿猫方案的新路径、试验与组合方案规则。
-- [AGENTS.md](AGENTS.md)：仓库级维护约定，约束如何修改这个技能与参考文件（reference）。
-
-## 从这里开始（Start Here）
-
-1. 想理解这个技能的运行方式，先读 [SKILL.md](SKILL.md)。
-1. 想理解六顶思考帽的整体框架，再读 [references/framework.md](references/framework.md)。
-1. 想理解提问边界与信息采集方式，读 [references/socratic-questioning.md](references/socratic-questioning.md)。
-1. 想修改某一只猫的行为，直接读对应的猫参考文件（cat reference）。
-
-## 维护说明（Maintenance Notes）
-
-- **README 保持高层概览**，不复制 [SKILL.md](SKILL.md) 或参考文件（reference）里的长段细节。
-- 工作流骨架与不可协商约束写在 [SKILL.md](SKILL.md)；细化规则沉到 [references/](references) 下。
-- 如果 README 提到流程，要明确那是本仓库的默认执行编排，而不是六顶思考帽理论的唯一合法顺序。
-- 修改工作流或命名规约时，要同步检查 [SKILL.md](SKILL.md)、[AGENTS.md](AGENTS.md) 与相关参考文件（reference）。
-- **最终交付始终是 Mermaid 决策树**，而不是泛化总结或空泛建议。
+- 想直接使用这个技能，优先看 [SKILL.md](SKILL.md)。
+- 想理解六顶思考帽的整体理论，再看 [references/framework.md](references/framework.md)。
+- 想了解提问与信息采集方式，可看 [references/socratic-questioning.md](references/socratic-questioning.md)。
