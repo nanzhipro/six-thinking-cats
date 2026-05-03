@@ -51,6 +51,12 @@ npx skills update six-thinking-cats
 
 如果你的问题接近上面这些真实决策，这个技能就适合直接上手。
 
+## 实际运行示例（Example）
+
+- 仓库已包含一份完整运行样例：[example/特斯拉换油车.md](example/%E7%89%B9%E6%96%AF%E6%8B%89%E6%8D%A2%E6%B2%B9%E8%BD%A6.md)。
+- 这个样例展示了从决策问题、六猫分析、蓝猫收束到 Mermaid 决策树的完整交付链路。
+- 示例问题是“要不要把特斯拉换成油车”，当前结论是不换，先完成低成本验证，再决定是否重启换车判断。
+
 ## 工作机制与约束（How It Works）
 
 <!-- markdownlint-disable MD033 -->
