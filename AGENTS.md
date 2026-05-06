@@ -11,6 +11,7 @@
 - Preserve the YAML frontmatter at the top of [SKILL.md](./SKILL.md); keep `name`, `description`, and trigger phrases aligned with the skill's purpose.
 - Follow the link-don't-embed rule: if theory or detailed definitions already exist in [references/framework.md](./references/framework.md), reference that file instead of duplicating long explanations.
 - Keep [SKILL.md](./SKILL.md) focused on invocation cues, workflow steps, and non-negotiable constraints.
+- Keep reusable subagent rules in [references/subagent-contract.md](./references/subagent-contract.md); use [SKILL.md](./SKILL.md) only to state where that contract is mandatory in the workflow.
 - Preserve the distinction between de Bono's original Six Thinking Hats theory and this repository's default execution model; do not rewrite the repo's default orchestration as if it were the theory's only valid sequence.
 
 ## Workflow Constraints
@@ -22,6 +23,7 @@
 - Prefer choice-based prompts over open text when practical.
 - Treat the "信息质量三原则" as hard requirements: push for specifics, separate facts from assumptions, and call out unknown-but-important gaps.
 - Before launching any cat subagent, collect all necessary information and package it into a shared brief used by every cat.
+- Every subagent must use the same model as the parent agent; do not silently switch to a weaker or different model for any cat stage.
 - The red-cat stage must still include one explicit user-facing question about feelings, intuition, or hidden concerns, but it must be asked by the parent agent before subagents start.
 - White, yellow, black, red, and green cats should run in separate subagents in parallel once the shared brief is complete.
 - Cat subagents must not ask the user follow-up questions or wait for additional user input.

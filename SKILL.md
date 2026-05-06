@@ -1,9 +1,6 @@
 ---
 name: six-thinking-cats
-description: >
-  Analyze personal decisions with six independent thinking cats and output a Mermaid decision tree.
-  Use when users are making a choice, weighing tradeoffs, or feeling stuck in work, life, business, or investing.
-  Triggers include 决策困难、纠结选择、不知道该怎么选、要不要做某件事、权衡利弊、分析风险、换工作、创业、投资、买房、换车、搬家、六顶思考帽、六只思考猫、thinking hats、thinking cats、帮我分析一下、帮我想想。
+description: Analyzes personal decisions with six independent thinking cats and outputs a Mermaid decision tree. Use when users are making a choice, weighing tradeoffs, or feeling stuck in work, life, business, or investing. Triggers include 决策困难、纠结选择、不知道该怎么选、要不要做某件事、权衡利弊、分析风险、换工作、创业、投资、买房、换车、搬家、六顶思考帽、六只思考猫、thinking hats、thinking cats、帮我分析一下、帮我想想。
 argument-hint: 一句话描述你正在做的决策，例如：要不要辞职去创业
 ---
 
@@ -24,6 +21,7 @@ argument-hint: 一句话描述你正在做的决策，例如：要不要辞职�
 
 - [整体框架](./references/framework.md)
 - [苏格拉底式探询原则](./references/socratic-questioning.md)
+- [Subagent 执行合同](./references/subagent-contract.md)
 
 进入具体阶段前，再读取对应的单猫 reference：
 
@@ -37,27 +35,19 @@ argument-hint: 一句话描述你正在做的决策，例如：要不要辞职�
 ## Execution Model
 
 - 本 skill 采用“父代理编排 + 猫 subagent 执行”模式。
+- subagent 默认开启；所有 subagent 必须与父代理使用同一模型，确保模型能力与推理层级始终一致。
 - 父代理负责向用户提问、补充公共信息、整理共享资料包、调度 subagent、呈现最终结果。
 - 蓝猫分成两个 subagent 节点：启动蓝猫和收束蓝猫。
 - 白猫、黄猫、黑猫、红猫、绿猫是五个独立 subagent，在满足依赖后并行运行。
 - 猫 subagent 不直接向用户提问，不等待额外输入，不读取其他猫的输出。
 - 只有蓝猫收束阶段允许跨猫整合。
+- 所有 subagent 都同时受 [Subagent 执行合同](./references/subagent-contract.md) 和对应单猫 reference 约束；单猫 reference 只能补充细节，不能降低共享约束。
 - 这是一套为本 skill 设计的默认工程化编排；在六顶思考帽原理上，蓝帽可以按任务需要调整顺序、重复或重访某一帽子。
 
 ## Visual Labeling Convention
 
-- 宿主界面的真实 UI 颜色不可由本 skill 直接配置；视觉一致性通过 emoji 和命名规约实现。
-- 每次调用 subagent 时，title、description 或阶段标签都必须以“对应颜色 emoji + 猫名 + 阶段职责”的格式命名。
-- 固定映射如下：
-  - 🔵 蓝猫启动：定义边界、时间窗口、缺失信息清单。
-  - ⚪ 白猫：事实、假设、信息缺口。
-  - 🟡 黄猫：价值、收益、机会。
-  - ⚫ 黑猫：风险、脆弱点、退路。
-  - 🔴 红猫：情绪、直觉、隐藏顾虑。
-  - 🟢 绿猫：新路径、试验、组合方案。
-  - 🔵 蓝猫收束：跨猫整合、阶段性结论、待验证分歧、下一步行动。
-- 不允许出现无颜色标识的猫 subagent 名称，例如“白猫分析”应写成“⚪ 白猫事实”或同等清晰格式。
-- 最终输出中的阶段标题也必须沿用同一套映射，确保 subagent 调用标签与交付内容保持一致。
+- 视觉标签属于共享低自由度规约；固定映射与命名格式见 [Subagent 执行合同](./references/subagent-contract.md)。
+- 所有 subagent 调用标签和最终输出阶段标题都必须沿用同一套“emoji + 猫名 + 阶段职责”命名。
 
 ## Workflow Contract
 
@@ -103,7 +93,7 @@ flowchart TD
 
 3. Step 2: Run the blue-start subagent
 
-   读取 [蓝猫 reference](./references/blue-cat.md)。蓝猫启动 subagent 只做四件事：
+   先读取 [Subagent 执行合同](./references/subagent-contract.md)，再读取 [蓝猫 reference](./references/blue-cat.md)。蓝猫启动 subagent 只做四件事：
    - 定义核心决策问题
    - 标记时间窗口
    - 判定场景类型
@@ -111,43 +101,27 @@ flowchart TD
 
 4. Step 3: Collect all required input through multi-round interaction before analysis
 
-   这是父代理阶段，不由任何猫 subagent 执行。父代理必须在启动分析 subagent 之前，通过多轮交互逐步收齐必要信息，并在每轮回答后更新下一轮的追问重点，再整理成共享资料包。
+   这是父代理阶段，不由任何猫 subagent 执行。先读取 [苏格拉底式探询原则](./references/socratic-questioning.md)，再完成下面清单；未全部满足前，不得启动分析 subagent。
 
-   父代理必须把信息采集当作一个递进漏斗，而不是一轮问卷：先锚定方向与现状，再追问最能改变判断的约束、资源、目标、底线、历史经验、情绪与隐藏顾虑，最后只补剩余的高价值缺口。
-
-   共享资料包至少包含：
-   - 核心决策问题
-   - 边界与时间窗口
-   - 已验证事实
-   - 假设与不确定项
-   - 未知但重要的信息缺口
-   - 资源与硬约束
-   - 用户目标与底线
-   - 用户情绪、直觉、隐藏顾虑
-   - 相关历史经验
-
-   收集输入时必须遵守：
-   - 先基于场景推理出 4 到 8 个高影响决策维度，再决定提问顺序；维度必须从用户主题和已知输入中长出来，不能直接套固定问卷
-   - 一次最多问 2 个问题，但总轮次不限；只要仍有会影响判断方向的高价值缺口，就继续下一轮
-   - 每轮都要根据用户上一轮的回答重排问题优先级；如果出现新的关键变量，后续问题必须随之调整
-   - 优先使用轻量、可点选的提问方式
-   - 优先追问会改变判断方向的变量，而不是收集好看但无决策价值的信息
-   - 能自己补充的公共信息就主动补充
-   - 必须至少有一个明确的感受类问题，为红猫 subagent 提供输入
-   - 准备结束追问前，先自查共享资料包是否已经足以让白猫、黄猫、黑猫、红猫、绿猫各自独立工作；如果不能，继续追问
+   父代理预分析清单：
+   - 已基于当前场景识别 4 到 8 个高影响决策维度，而不是套固定问卷。
+   - 每轮只问最多 2 个问题，并在收到回答后重排下一轮优先级。
+   - 已至少问出 1 个明确的感受、直觉或隐藏顾虑问题，供红猫使用。
+   - 共享资料包已包含：核心决策问题、边界与时间窗口、已验证事实、假设与不确定项、未知但重要的信息缺口、资源与硬约束、用户目标与底线、用户情绪与隐藏顾虑、相关历史经验。
+   - 若仍有会改变判断方向的高价值缺口，则继续追问；只有共享资料包已足以让五猫独立工作时，才能结束此阶段。
 
 5. Step 4: Run five cat subagents in parallel
 
    共享资料包准备完成后，立即并行启动五个独立 subagent：
-   - 白猫：读取 [白猫 reference](./references/white-cat.md)，只输出事实基线、假设和信息缺口。
-   - 黄猫：读取 [黄猫 reference](./references/yellow-cat.md)，只输出上行空间、收益和机会。
-   - 黑猫：读取 [黑猫 reference](./references/black-cat.md)，只输出下行风险、极端情景和退路判断。
-   - 红猫：读取 [红猫 reference](./references/red-cat.md)，只输出情绪、直觉和隐藏顾虑信号。
-   - 绿猫：读取 [绿猫 reference](./references/green-cat.md)，只输出替代路径、过渡方案和组合方案。
+   - 白猫：先读取 [Subagent 执行合同](./references/subagent-contract.md)，再读取 [白猫 reference](./references/white-cat.md)，只输出事实基线、假设和信息缺口。
+   - 黄猫：先读取 [Subagent 执行合同](./references/subagent-contract.md)，再读取 [黄猫 reference](./references/yellow-cat.md)，只输出上行空间、收益和机会。
+   - 黑猫：先读取 [Subagent 执行合同](./references/subagent-contract.md)，再读取 [黑猫 reference](./references/black-cat.md)，只输出下行风险、极端情景和退路判断。
+   - 红猫：先读取 [Subagent 执行合同](./references/subagent-contract.md)，再读取 [红猫 reference](./references/red-cat.md)，只输出情绪、直觉和隐藏顾虑信号。
+   - 绿猫：先读取 [Subagent 执行合同](./references/subagent-contract.md)，再读取 [绿猫 reference](./references/green-cat.md)，只输出替代路径、过渡方案和组合方案。
 
 6. Step 5: Run the blue-synthesis subagent
 
-   再次读取 [蓝猫 reference](./references/blue-cat.md)。蓝猫收束 subagent 是唯一允许跨猫整合的节点。它必须：
+   再次先读取 [Subagent 执行合同](./references/subagent-contract.md)，再读取 [蓝猫 reference](./references/blue-cat.md)。蓝猫收束 subagent 是唯一允许跨猫整合的节点。它必须：
    - 汇总五只猫的子结果
    - 给出当前最合理的综合判断、条件分叉或下一步动作，而不是只做模糊平衡
    - 指出“下一步第一个行动”
@@ -204,6 +178,7 @@ flowchart TD
 - 没有明确的决策问题时，不得开始分析。
 - 没有完成场景深度思考时，不得开始追问。
 - 没有完成共享资料包时，不得启动任何分析 subagent。
+- 所有 subagent 必须与父代理保持同一模型；如果宿主环境不能保证这一点，就不得偷偷降级到其他模型继续运行。
 - “一次最多问 2 个问题”是单轮交互上限，不是总提问上限。
 - 如果用户的回答暴露出新的关键变量，必须继续多轮追问，直到共享资料包足以支撑五猫独立分析。
 - 父代理是唯一允许直接向用户提问的角色。
@@ -211,6 +186,7 @@ flowchart TD
 - 一次只允许一只猫在自己的视角里思考；五只猫彼此独立，不共享中间判断。
 - 如果某个猫 subagent 混入了别的猫的视角，立即丢弃该子结果并重跑。
 - 只有蓝猫收束阶段允许跨猫整合。
+- 所有猫 subagent 以及蓝猫两个阶段，都必须同时遵守 [Subagent 执行合同](./references/subagent-contract.md) 和对应单猫 reference。
 - 最终交付物始终是 Mermaid 决策树，不是普通总结。
 - 最终完整结论必须写入本地 Markdown 文档；只在对话里输出不算完成交付。
 - 本地文档必须包含 Mermaid 决策树源码和文末的“系统思考总结”。
