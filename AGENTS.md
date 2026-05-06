@@ -22,6 +22,7 @@
 - Ask at most two user-facing questions at a time.
 - When asking the user, prefer the runtime's built-in user-input tool if one exists; only fall back to numbered plain text when no such tool is available.
 - If the user-input tool supports batching, combine all applicable questions from the current round into one call; if it only supports single-question mode, ask them one at a time in priority order.
+- If the user-input tool uses structured options, only provide `options` when a question truly has at least two valid choices; otherwise omit `options` and ask for freeform input or put the suggestion in the helper text.
 - If a turn contains direct user-facing question(s), the parent agent must end that turn after the question(s) and wait for the user's real reply; never self-answer, simulate a reply, or continue analysis in the same turn.
 - Prefer choice-based prompts over open text when practical.
 - Treat the "信息质量三原则" as hard requirements: push for specifics, separate facts from assumptions, and call out unknown-but-important gaps.
